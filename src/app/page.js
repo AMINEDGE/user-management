@@ -1,103 +1,225 @@
+"use client";
+
+import { cfg } from "@/cfg";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import {
+  ChevronLeft,
+  ChevronRight,
+  Eye,
+  Pencil,
+  Plus,
+  Trash,
+  Trash2,
+} from "lucide-react";
 import Image from "next/image";
+import Link from "next/link";
+import { useEffect, useState } from "react";
+import { ClipLoader } from "react-spinners";
+import Swal from "sweetalert2";
+import withReactContent from "sweetalert2-react-content";
 
 export default function Home() {
-  return (
-    <div className="font-sans grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20">
-      <main className="flex flex-col gap-[32px] row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="font-mono list-inside list-decimal text-sm/6 text-center sm:text-left">
-          <li className="mb-2 tracking-[-.01em]">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] font-mono font-semibold px-1 py-0.5 rounded">
-              src/app/page.js
-            </code>
-            .
-          </li>
-          <li className="tracking-[-.01em]">
-            Save and see your changes instantly.
-          </li>
-        </ol>
+  const [loadingEnabled, setLoadingEnabled] = useState(false);
+  const [token, setToken] = useState("");
+  const [page, setPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(2);
+  const [users, setUsers] = useState([]);
 
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:w-auto"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 w-full sm:w-auto md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
+  const init = async () => {
+    setLoadingEnabled(true);
+    const savedToken = localStorage.getItem("token");
+
+    if (!savedToken) {
+      setLoadingEnabled(false);
+      return;
+    }
+
+    setToken(savedToken);
+
+    const res = await fetch(`${cfg.apiEndpoint}users?page=${page}`, {
+      method: "GET",
+      headers: {
+        Accept: "application/json",
+        "x-api-key": cfg.apiKey,
+        Authorization: `Bearer ${savedToken}`,
+      },
+    });
+
+    if (res.status == 401 || res.status == 429) {
+      window.location.href = "/login";
+      return;
+    }
+
+    const body = await res.json();
+    setTotalPages(body.total_pages);
+    setUsers(body.data);
+
+    setLoadingEnabled(false);
+    console.log(`USERS: ${JSON.stringify(body)}`);
+  };
+
+  const deleteUser = async (id) => {
+    const token = localStorage.getItem("token");
+
+    if (!token) {
+      document.location.href = "/login";
+    }
+
+    const res = await fetch(`${cfg.apiEndpoint}users/${id}`, {
+      method: "DELETE",
+      headers: {
+        Accept: "application/json",
+        "x-api-key": cfg.apiKey,
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    // const body = await res.json();
+
+    if (!res.ok) {
+      return;
+    }
+
+    init();
+  };
+
+  const logout = () => {
+    localStorage.removeItem("token");
+    window.location.href = "/login";
+  };
+
+  useEffect(() => {
+    init();
+  }, []);
+
+  useEffect(() => {
+    init();
+  }, [page]);
+
+  const UserList = (props) => (
+    <div className="flex flex-col items-center bg-[#f8f8f8] rounded-xl overflow-hidden p-4 my-8">
+      <table>
+        <thead>
+          <tr className="h-30">
+            <th className="w-20">Index</th>
+            <th className="w-60">Email</th>
+            <th className="w-60">Name</th>
+            <th className="w-40">Avatar</th>
+            <th className="w-20">Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          {users?.map((u, i) => (
+            <tr key={i} className="h-30">
+              <td className="text-center">{i + 1}</td>
+              <td className="text-center">{u.email}</td>
+              <td className="text-center">{`${u.first_name} ${u.last_name}`}</td>
+              <td className="text-center">
+                <img
+                  className="mx-auto rounded-4xl w-20 h-20 object-cover"
+                  src={u.avatar}
+                />
+              </td>
+              <td className="text-center">
+                <div className="flex flex-row gap-4 self-center">
+                  <Link href={`/user/details/${u.id}`}>
+                    <Eye color="#0ac" />
+                  </Link>
+                  <Link href={`/user/edit/${u.id}`}>
+                    <Pencil color="#fc0" />
+                  </Link>
+                  <button
+                    className="cursor-pointer"
+                    onClick={() => {
+                      withReactContent(Swal).fire({
+                        title: <i>You sure you want to delete this user?</i>,
+                        icon: "error",
+                        showCancelButton: true,
+                        confirmButtonText: "Yes, delete it!",
+                        cancelButtonText: "No, cancel!",
+                        preConfirm: () => {
+                          deleteUser(u.id);
+                        },
+                      });
+                    }}
+                  >
+                    <Trash2 color="#f06" />
+                  </button>
+                </div>
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+
+      <div className="flex flex-row items-center gap-4">
+        <button
+          disabled={page == 1}
+          className={`rounded-full p-2 ${
+            page == 1
+              ? "bg-[#ccc] cursor-not-allowed"
+              : "bg-purple-600 cursor-pointer"
+          }`}
+          onClick={() => setPage(page - 1)}
+        >
+          <ChevronLeft className="text-white" />
+        </button>
+        <span>
+          Page {page} of {totalPages}
+        </span>
+        <button
+          disabled={page == totalPages}
+          onClick={() => setPage(page + 1)}
+          className={`rounded-full p-2 ${
+            page == totalPages
+              ? "bg-[#ccc] cursor-not-allowed"
+              : "bg-purple-600 cursor-pointer"
+          }`}
+        >
+          <ChevronRight className="text-white" />
+        </button>
+      </div>
+    </div>
+  );
+
+  return (
+    <div className="flex flex-col items-center justify-center min-h-screen">
+      <h1 className="text-4xl font-bold mb-4">
+        Welcome to User Management App
+      </h1>
+      {loadingEnabled ? (
+        <ClipLoader size={16} />
+      ) : token ? (
+        <div className="flex flex-col items-center">
+          <div className="flex flex-row items-center gap-4">
+            <Link
+              href={"/user/add"}
+              className="flex w-40 flex-row items-center justify-center bg-green-400 p-2 font-bold gap-2 text-white rounded-md"
+            >
+              <Plus color="white" /> Add New User
+            </Link>
+            <button
+              onClick={() => {
+                withReactContent(Swal).fire({
+                  title: <i>You sure you want to logout?</i>,
+                  icon: "warning",
+                  showCancelButton: true,
+                  confirmButtonText: "Yes!",
+                  cancelButtonText: "No, cancel!",
+                  preConfirm: () => {
+                    logout();
+                  },
+                });
+              }}
+              className="flex w-40 cursor-pointer flex-col items-center bg-[#f06] p-2 font-bold gap-2 text-white rounded-md"
+            >
+              Logout
+            </button>
+          </div>
+          <UserList data={users} />
         </div>
-      </main>
-      <footer className="row-start-3 flex gap-[24px] flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
+      ) : (
+        <Link href={"/login"}>Login</Link>
+      )}
     </div>
   );
 }
