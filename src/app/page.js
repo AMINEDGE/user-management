@@ -5,6 +5,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   ChevronLeft,
   ChevronRight,
+  DoorClosed,
   Eye,
   Pencil,
   Plus,
@@ -117,7 +118,10 @@ export default function Home() {
     isPhone ? (
       <div>
         {users.map((u, i) => (
-          <div className="flex flex-col items-center bg-[#f8f8f8] rounded-xl overflow-hidden p-4 my-8">
+          <div
+            key={i}
+            className="flex flex-col items-center bg-[#f8f8f8] rounded-xl overflow-hidden p-4 my-8"
+          >
             <div className="flex flex-row w-full items-center gap-2">
               <img
                 className="mx-auto rounded-4xl w-20 h-20 object-cover"
@@ -306,9 +310,9 @@ export default function Home() {
                   },
                 });
               }}
-              className="flex w-40 cursor-pointer flex-col items-center bg-[#f06] p-2 font-bold gap-2 text-white rounded-md"
+              className="flex w-40 cursor-pointer flex-row items-center justify-center bg-[#f06] p-2 font-bold gap-2 text-white rounded-md"
             >
-              Logout
+              <DoorClosed color="white" /> Logout
             </button>
           </div>
           <UserList data={users} />

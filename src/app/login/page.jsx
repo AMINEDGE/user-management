@@ -1,6 +1,7 @@
 "use client";
 
 import { cfg } from "@/cfg";
+import { DoorOpen } from "lucide-react";
 import Link from "next/link";
 import React, { useState } from "react";
 import { ClipLoader } from "react-spinners";
@@ -8,39 +9,31 @@ import { ClipLoader } from "react-spinners";
 export default function Login() {
   //   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
+  const [emailErrorMessage, setEmailErrorMessage] = useState("");
   const [password, setPassword] = useState("");
-
-  const [errorMessages, setErrorMessages] = useState([]);
+  const [passwordErrorMessage, setPasswordErrorMessage] = useState("");
+  const [errorMessage, setErrorMessage] = useState("");
 
   const [loadingEnabled, setLoadingEnabled] = useState(false);
 
   const validateForm = () => {
     var isFormValid = true;
-    var errors = [];
-    setErrorMessages([]);
 
-    // if (!username.trim()) {
-    //   errors.push("Username is required");
-    //   isFormValid = false;
-    // }
     if (!email.trim()) {
-      errors.push("Email is required");
+      setEmailErrorMessage("Email is required");
       isFormValid = false;
     }
     if (!password.trim()) {
-      errors.push("Password is required");
+      setPasswordErrorMessage("Password is required");
       isFormValid = false;
-    }
-
-    if (!isFormValid) {
-      setErrorMessages(errors);
     }
 
     return isFormValid;
   };
 
   const login = async () => {
-    setErrorMessages([]);
+    setEmailErrorMessage("");
+    setPasswordErrorMessage("");
     setLoadingEnabled(true);
 
     if (!validateForm()) {
@@ -63,7 +56,7 @@ export default function Login() {
     const body = await res.json();
 
     if (!res.ok) {
-      setErrorMessages([body.error || "Something went wrong"]);
+      setErrorMessage(body.error || "Something went wrong");
       setLoadingEnabled(false);
       return;
     }
@@ -82,30 +75,44 @@ export default function Login() {
       <div className="w-full max-w-sm p-6 flex flex-col items-center border border-gray-200 rounded-lg shadow-md">
         <h1 className="text-2xl font-bold my-8">Login Page</h1>
         <form className="flex flex-col items-center gap-4">
-          <input
-            type="text"
-            placeholder="Email"
-            className="border border-gray-300 p-2 rounded"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-          />
-          <input
-            type="password"
-            placeholder="Password"
-            className="border border-gray-300 p-2 rounded"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-          />
-          {setErrorMessages.length &&
-            errorMessages.map((e) => (
-              <p className="text-red-500 text-sm">{e}</p>
-            ))}
+          <div className="flex flex-col w-full">
+            <label className="font-bold self-start">Email</label>
+            <input
+              type="text"
+              placeholder="michael.lawson@reqres.in"
+              className="border border-gray-300 p-2 rounded"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+            />
+            {emailErrorMessage && (
+              <p className="text-red-500 text-sm">{emailErrorMessage}</p>
+            )}
+          </div>
+
+          <div className="flex flex-col w-full">
+            <label className="font-bold self-start">Email</label>
+            <input
+              type="password"
+              placeholder="Password"
+              className="border border-gray-300 p-2 rounded"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+            />
+            {passwordErrorMessage && (
+              <p className="text-red-500 text-sm">{passwordErrorMessage}</p>
+            )}
+          </div>
+
+          {errorMessage && (
+            <p className="text-red-500 text-sm">{errorMessage}</p>
+          )}
           <button
             onClick={() => login()}
             type="button"
-            className="flex flex-row w-full mt-4 items-center justify-center gap-2 transition-all bg-cyan-600 text-white p-2 rounded hover:bg-cyan-800 cursor-pointer"
+            className="flex flex-row w-full mt-4 items-center justify-center gap-2 transition-all bg-cyan-600 text-white p-2 rounded hover:bg-cyan-800 cursor-pointer font-bold"
           >
-            Login {loadingEnabled && <ClipLoader color="white" size={16} />}
+            <DoorOpen /> Login{" "}
+            {loadingEnabled && <ClipLoader color="white" size={16} />}
           </button>
           <Link className="mt-4 text-gray-600 cursor-pointer" href="/">
             Go Back
