@@ -85,7 +85,7 @@ export default function Details() {
           </Link>
         </div>
         {loadingEnabled ? (
-          <ClipLoader className="my-4" />
+          <ClipLoader className="my-4" color="#ccc" />
         ) : user ? (
           <div className="flex flex-col my-8 gap-4">
             <div className="flex flex-row items-center gap-4">

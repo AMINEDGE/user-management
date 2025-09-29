@@ -130,7 +130,7 @@ export default function Edit() {
 
   return (
     <div className="flex flex-col items-center m-8 rounded-xl p-4">
-      <div className="flex flex-col items-center m-8 w-80 h-146 rounded-xl bg-[#eee] dark:bg-[#222] p-4">
+      <div className="flex flex-col items-center m-8 w-80 rounded-xl bg-[#eee] dark:bg-[#222] p-4">
         <div className="flex flex-col items-start w-full">
           <button onClick={() => router.back()} className="self-start">
             <ChevronLeft />
@@ -192,7 +192,7 @@ export default function Edit() {
           <button
             onClick={() => edit()}
             type="button"
-            className="flex flex-row w-full mt-4 items-center justify-center gap-2 transition-all bg-cyan-600 text-white p-2 rounded hover:bg-cyan-800 cursor-pointer"
+            className="flex flex-row w-full mt-4 mb-8 items-center justify-center gap-2 transition-all bg-cyan-600 text-white p-2 rounded hover:bg-cyan-800 cursor-pointer"
           >
             <Pencil size={16} /> Edit{" "}
             {formLoadingEnabled && <ClipLoader color="white" size={16} />}
