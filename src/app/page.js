@@ -120,7 +120,7 @@ export default function Home() {
         {users.map((u, i) => (
           <div
             key={i}
-            className="flex flex-col items-center bg-[#f8f8f8] rounded-xl overflow-hidden p-4 my-8"
+            className="flex flex-col items-center bg-[#f8f8f8] dark:bg-[#222] rounded-xl overflow-hidden p-4 my-8"
           >
             <div className="flex flex-row w-full items-center gap-2">
               <img
@@ -196,7 +196,7 @@ export default function Home() {
         </div>
       </div>
     ) : (
-      <div className="flex flex-col items-center bg-[#f8f8f8] rounded-xl overflow-hidden p-4 my-8">
+      <div className="flex flex-col items-center bg-[#f8f8f8] dark:bg-[#222] rounded-xl overflow-hidden p-4 my-8">
         <table>
           <thead>
             <tr className="h-30">
@@ -287,7 +287,7 @@ export default function Home() {
         Welcome to User Management App
       </h1>
       {loadingEnabled ? (
-        <ClipLoader size={16} />
+        <ClipLoader size={16} color="#ccc" />
       ) : token ? (
         <div className="flex flex-col items-center">
           <div className="flex flex-row items-center gap-4">

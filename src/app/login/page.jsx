@@ -20,7 +20,7 @@ export default function Login() {
     var isFormValid = true;
 
     if (!email.trim()) {
-      setEmailErrorMessage("Email is required");
+      setEmailErrorMessage("Email is required, hint: michael.lawson@reqres.in");
       isFormValid = false;
     }
     if (!password.trim()) {
@@ -34,6 +34,7 @@ export default function Login() {
   const login = async () => {
     setEmailErrorMessage("");
     setPasswordErrorMessage("");
+    setErrorMessage("");
     setLoadingEnabled(true);
 
     if (!validateForm()) {
@@ -72,7 +73,7 @@ export default function Login() {
 
   return (
     <div className="flex flex-col items-center justify-center min-h-screen">
-      <div className="w-full max-w-sm p-6 flex flex-col items-center border border-gray-200 rounded-lg shadow-md">
+      <div className="w-80 p-6 flex flex-col items-center border border-gray-200 rounded-lg shadow-md">
         <h1 className="text-2xl font-bold my-8">Login Page</h1>
         <form className="flex flex-col items-center gap-4">
           <div className="flex flex-col w-full">
@@ -90,7 +91,7 @@ export default function Login() {
           </div>
 
           <div className="flex flex-col w-full">
-            <label className="font-bold self-start">Email</label>
+            <label className="font-bold self-start">Password</label>
             <input
               type="password"
               placeholder="Password"

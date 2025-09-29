@@ -130,14 +130,14 @@ export default function Edit() {
 
   return (
     <div className="flex flex-col items-center m-8 rounded-xl p-4">
-      <div className="flex flex-col items-center m-8 w-80 rounded-xl bg-[#eee] p-4">
+      <div className="flex flex-col items-center m-8 w-80 h-146 rounded-xl bg-[#eee] dark:bg-[#222] p-4">
         <div className="flex flex-col items-start w-full">
           <button onClick={() => router.back()} className="self-start">
             <ChevronLeft />
           </button>
         </div>
         <h1 className="text-2xl font-bold my-8">Edit User</h1>
-        {loadingEnabled && <ClipLoader className="my-4" />}
+        {loadingEnabled && <ClipLoader className="my-4" color="#ccc" />}
         <form className="flex flex-col items-center gap-4">
           <div className="flex flex-col w-full">
             <label className="font-bold self-start">First Name</label>

@@ -64,7 +64,7 @@ export default function Edit() {
 
   return (
     <div className="flex flex-col items-center m-8 rounded-xl p-4">
-      <div className="flex flex-col items-center m-8 w-80 rounded-xl bg-[#eee] p-4">
+      <div className="flex flex-col items-center m-8 w-80 rounded-xl bg-[#eee] dark:bg-[#222] p-4">
         <div className="flex flex-col items-start w-full">
           <Link href={"/"} className="self-start">
             <ChevronLeft />
