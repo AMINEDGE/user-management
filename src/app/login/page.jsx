@@ -3,6 +3,7 @@
 import { cfg } from "@/cfg";
 import { DoorOpen } from "lucide-react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import React, { useState } from "react";
 import { ClipLoader } from "react-spinners";
 
@@ -15,6 +16,8 @@ export default function Login() {
   const [errorMessage, setErrorMessage] = useState("");
 
   const [loadingEnabled, setLoadingEnabled] = useState(false);
+
+  const router = useRouter();
 
   const validateForm = () => {
     var isFormValid = true;
@@ -68,7 +71,7 @@ export default function Login() {
   const saveToken = (body) => {
     setLoadingEnabled(false);
     localStorage.setItem("token", body.token);
-    window.location.href = "/";
+    router.replace("/");
   };
 
   return (

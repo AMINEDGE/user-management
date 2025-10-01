@@ -49,7 +49,7 @@ export default function Edit() {
     const token = localStorage.getItem("token");
 
     if (!token) {
-      document.location.href = "/login";
+      router.replace("/login");
     }
 
     const res = await fetch(`${cfg.apiEndpoint}users/${params.id}`, {
@@ -92,7 +92,7 @@ export default function Edit() {
     const token = localStorage.getItem("token");
 
     if (!token) {
-      document.location.href = "/login";
+      router.replace("/login");
     }
 
     const res = await fetch(`${cfg.apiEndpoint}users/${params.id}`, {
@@ -122,7 +122,7 @@ export default function Edit() {
       title: <i>Operation successful</i>,
       icon: "success",
       preConfirm: () => {
-        window.location.href = `/`;
+        router.replace("/");
       },
     });
     setFormLoadingEnabled(false);

@@ -14,6 +14,7 @@ import {
 } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { ClipLoader } from "react-spinners";
 import Swal from "sweetalert2";
@@ -27,6 +28,8 @@ export default function Home() {
   const [users, setUsers] = useState([]);
 
   const [isPhone, setIsPhone] = useState(false);
+
+  const router = useRouter();
 
   const isMobile = () => window.innerWidth <= 768;
   useEffect(() => {
@@ -65,7 +68,7 @@ export default function Home() {
     });
 
     if (res.status == 401 || res.status == 429) {
-      window.location.href = "/login";
+      router.replace("/login");
       return;
     }
 
@@ -81,7 +84,7 @@ export default function Home() {
     const token = localStorage.getItem("token");
 
     if (!token) {
-      document.location.href = "/login";
+      router.replace("/login");
     }
 
     const res = await fetch(`${cfg.apiEndpoint}users/${id}`, {
@@ -103,7 +106,7 @@ export default function Home() {
 
   const logout = () => {
     localStorage.removeItem("token");
-    window.location.href = "/login";
+    router.replace("/login");
   };
 
   useEffect(() => {

@@ -3,7 +3,7 @@
 import { cfg } from "@/cfg";
 import { ChevronLeft, Plus } from "lucide-react";
 import Link from "next/link";
-import { useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
 import { ClipLoader } from "react-spinners";
 import Swal from "sweetalert2";
@@ -20,6 +20,8 @@ export default function Edit() {
 
   const [loadingEnabled, setLoadingEnabled] = useState(false);
   const [formLoadingEnabled, setFormLoadingEnabled] = useState(false);
+
+  const router = useRouter();
 
   const validateForm = () => {
     var isFormValid = true;
@@ -55,7 +57,7 @@ export default function Edit() {
         title: <i>Operation successful</i>,
         icon: "success",
         preConfirm: () => {
-          window.location.href = `/`;
+          router.replace("/");
         },
       });
       setFormLoadingEnabled(false);

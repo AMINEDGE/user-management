@@ -3,7 +3,7 @@
 import { cfg } from "@/cfg";
 import { ChevronLeft, Eye, Pencil, Trash2 } from "lucide-react";
 import Link from "next/link";
-import { useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
 import { ClipLoader } from "react-spinners";
 import Swal from "sweetalert2";
@@ -14,13 +14,15 @@ export default function Details() {
   const [user, setUser] = useState(null);
   const [loadingEnabled, setLoadingEnabled] = useState(false);
 
+  const router = useRouter();
+
   const init = async () => {
     setLoadingEnabled(true);
 
     const token = localStorage.getItem("token");
 
     if (!token) {
-      document.location.href = "/login";
+      router.replace("/login");
     }
 
     const res = await fetch(`${cfg.apiEndpoint}users/${params.id}`, {
@@ -46,7 +48,7 @@ export default function Details() {
     const token = localStorage.getItem("token");
 
     if (!token) {
-      document.location.href = "/login";
+      router.replace("/login");
     }
 
     const res = await fetch(`${cfg.apiEndpoint}users/${id}`, {
@@ -66,7 +68,7 @@ export default function Details() {
       title: <i>Operation successful</i>,
       icon: "success",
       preConfirm: () => {
-        window.location.href = `/`;
+        router.replace("/");
       },
     });
     init();
